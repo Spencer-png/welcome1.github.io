@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      color: #0f0;
+      font-family: monospace;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      perspective: 1000px;
+    }
+
+    .glitch {
+      font-size: 3em;
+      font-weight: bold;
+      text-transform: uppercase;
+      position: relative;
+      text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff,
+                   0.025em 0.04em 0 #fffc00;
+      animation: glitch 725ms infinite;
+    }
+
+    .glitch::before,
+    .glitch::after {
+      content: "System Breach";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      clip: rect(0, 900px, 0, 0);
+    }
+
+    .glitch::before {
+      left: 2px;
+      text-shadow: -1px 0 #ff0000;
+      animation: glitch-anim-1 2s infinite linear alternate-reverse;
+    }
+
+    .glitch::after {
+      left: -2px;
+      text-shadow: -1px 0 #0000ff;
+      animation: glitch-anim-2 3s infinite linear alternate-reverse;
+    }
+
+    .matrix-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow: hidden;
+      z-index: -1;
+    }
+
+    .scanline {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom,
+        transparent 50%,
+        rgba(0, 255, 0, 0.1) 50%
+      );
+      background-size: 100% 4px;
+      animation: scanline 10s linear infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .crt-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at center, transparent 50%, rgba(0, 0, 0, 0.7) 100%),
+        repeating-linear-gradient(transparent 0px, transparent 1px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0.1) 2px);
+      pointer-events: none;
+      z-index: 2;
+      animation: flicker 0.15s infinite;
+    }
+
+    .column {
+      position: absolute;
+      top: -100%;
+      width: 1px;
+      height: 100%;
+      background: linear-gradient(transparent, #0f0, #0f0, transparent);
+      animation: rain 3s infinite;
+    }
+
+    .subtext {
+      margin-top: 1em;
+      font-size: 1.2em;
+      opacity: 0.7;
+      animation: pulse 2s infinite;
+      text-shadow: 0 0 5px #0f0;
+    }
+
+    .forum-button {
+      margin-top: 2em;
+      padding: 1em 2em;
+      font-size: 1.2em;
+      font-family: monospace;
+      color: #0f0;
+      background: transparent;
+      border: 2px solid #0f0;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+      z-index: 3;
+    }
+
+    .forum-button::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(0, 255, 0, 0.1), transparent);
+      transform: rotate(45deg);
+      animation: shine 3s infinite;
+    }
+
+    .forum-button:hover {
+      background: #0f03;
+      box-shadow: 0 0 10px #0f0, 0 0 20px #0f0, 0 0 40px #0f0;
+      transform: scale(1.1) translateY(-5px);
+      letter-spacing: 2px;
+    }
+
+    .warning-box {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 15px;
+      border: 1px solid #0f0;
+      background: rgba(0, 20, 0, 0.7);
+      animation: warning-fade 4s infinite;
+    }
+
+    @keyframes warning-fade {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 0.3; }
+    }
+
+    @keyframes shine {
+      0% { transform: rotate(45deg) translateY(-100%); }
+      100% { transform: rotate(45deg) translateY(100%); }
+    }
+
+    @keyframes scanline {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(100vh); }
+    }
+
+    @keyframes flicker {
+      0% { opacity: 0.9; }
+      50% { opacity: 1; }
+      100% { opacity: 0.9; }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 0.3; }
+    }
+
+    @keyframes rain {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(200%); }
+    }
+
+    @keyframes glitch {
+      0% {
+        text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff,
+                     0.025em 0.04em 0 #fffc00;
+      }
+      15% {
+        text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff,
+                     0.025em 0.04em 0 #fffc00;
+      }
+      16% {
+        text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.035em 0 #fc00ff,
+                     -0.05em -0.05em 0 #fffc00;
+      }
+      49% {
+        text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.035em 0 #fc00ff,
+                     -0.05em -0.05em 0 #fffc00;
+      }
+      50% {
+        text-shadow: 0.05em 0.035em 0 #00fffc, 0.03em 0 0 #fc00ff,
+                     0 -0.04em 0 #fffc00;
+      }
+      99% {
+        text-shadow: 0.05em 0.035em 0 #00fffc, 0.03em 0 0 #fc00ff,
+                     0 -0.04em 0 #fffc00;
+      }
+      100% {
+        text-shadow: -0.05em 0 0 #00fffc, -0.025em -0.04em 0 #fc00ff,
+                     -0.04em -0.025em 0 #fffc00;
+      }
+    }
+
+    @keyframes glitch-anim-1 {
+      0% { clip: rect(30px, 900px, 36px, 0); }
+      20% { clip: rect(43px, 900px, 87px, 0); }
+      40% { clip: rect(12px, 900px, 65px, 0); }
+      60% { clip: rect(78px, 900px, 92px, 0); }
+      80% { clip: rect(15px, 900px, 34px, 0); }
+      100% { clip: rect(53px, 900px, 27px, 0); }
+    }
+
+    @keyframes glitch-anim-2 {
+      0% { clip: rect(12px, 900px, 59px, 0); }
+      20% { clip: rect(82px, 900px, 31px, 0); }
+      40% { clip: rect(27px, 900px, 73px, 0); }
+      60% { clip: rect(46px, 900px, 15px, 0); }
+      80% { clip: rect(64px, 900px, 95px, 0); }
+      100% { clip: rect(23px, 900px, 42px, 0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="matrix-bg">
+
+  </div>
+  <div class="scanline"></div>
+  <div class="crt-overlay"></div>
+  
+  <div class="warning-box">
+    WARNING: UNAUTHORIZED ACCESS DETECTED<br>
+    SECURITY PROTOCOL: DELTA-7
+  </div>
+  
+  <div class="glitch">System Breach</div>
+  <div class="subtext">Access granted: eye_angles.x</div>
+  <button class="forum-button" onclick="window.location.href='#'">Visit Forum</button>
+
+  <script>
+    const matrixBg = document.querySelector('.matrix-bg');
+    for (let i = 0; i < 50; i++) {
+      const column = document.createElement('div');
+      column.className = 'column';
+      column.style.left = Math.random() * 100 + '%';
+      column.style.animationDelay = Math.random() * 2 + 's';
+      column.style.animationDuration = Math.random() * 2 + 2 + 's';
+      matrixBg.appendChild(column);
+    }
+  </script>
+</body>
+</html>
