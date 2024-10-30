@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coders Forum</title>
+  <style>
+    /* General Styles */
+    body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      color: #0f0;
+      font-family: monospace;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      perspective: 1000px;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      padding: 2rem;
+    }
+
+    .glitch {
+      font-size: 3em;
+      font-weight: bold;
+      text-transform: uppercase;
+      position: relative;
+      text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00;
+      animation: glitch 725ms infinite;
+    }
+
+    .glitch::before,
+    .glitch::after {
+      content: "System Breach";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      clip: rect(0, 900px, 0, 0);
+    }
+
+    .glitch::before {
+      left: 2px;
+      text-shadow: -1px 0 #ff0000;
+      animation: glitch-anim-1 2s infinite linear alternate-reverse;
+    }
+
+    .glitch::after {
+      left: -2px;
+      text-shadow: -1px 0 #0000ff;
+      animation: glitch-anim-2 3s infinite linear alternate-reverse;
+    }
+
+    .subtext {
+      margin-top: 1em;
+      font-size: 1.2em;
+      opacity: 0.7;
+      animation: pulse 2s infinite;
+      text-shadow: 0 0 5px #0f0;
+    }
+
+    .forum-button {
+      margin-top: 2em;
+      padding: 1em 2em;
+      font-size: 1.2em;
+      color: #0f0;
+      background: transparent;
+      border: 2px solid #0f0;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+
+    .forum-button:hover {
+      background: #0f03;
+      box-shadow: 0 0 10px #0f0, 0 0 20px #0f0, 0 0 40px #0f0;
+      transform: scale(1.1) translateY(-5px);
+    }
+
+    /* Features Section */
+    .features {
+      width: 80%;
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 1rem;
+      border-top: 2px solid #0f0;
+      text-align: center;
+    }
+
+    .feature-item {
+      margin: 1rem 0;
+      font-size: 1.2em;
+      color: #0f0;
+    }
+
+    /* Contact Section */
+    .contact {
+      width: 80%;
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 1rem;
+      border-top: 2px solid #0f0;
+      text-align: center;
+    }
+
+    /* FAQ Section */
+    .faq {
+      width: 80%;
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 1rem;
+      border-top: 2px solid #0f0;
+      text-align: center;
+    }
+
+    .faq-item {
+      margin: 1rem 0;
+      color: #0f0;
+    }
+
+    /* Keyframes for glitch effect */
+    @keyframes glitch {
+      0% { text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00; }
+      15%, 49% { text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.035em 0 #fc00ff, -0.05em -0.05em 0 #fffc00; }
+      50% { text-shadow: 0.05em 0.035em 0 #00fffc, 0.03em 0 0 #fc00ff, 0 -0.04em 0 #fffc00; }
+    }
+
+    @keyframes glitch-anim-1 {
+      0%, 20% { clip: rect(30px, 900px, 36px, 0); }
+      40%, 60%, 80%, 100% { clip: rect(43px, 900px, 87px, 0); }
+    }
+
+    @keyframes glitch-anim-2 {
+      0%, 20% { clip: rect(12px, 900px, 59px, 0); }
+      40%, 60%, 80%, 100% { clip: rect(82px, 900px, 31px, 0); }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <div class="glitch">System Breach</div>
+    <div class="subtext">Access granted: eye_angles.x</div>
+    <button class="forum-button" onclick="window.location.href='#forum'">Visit Forum</button>
+  </div>
+
+  <div class="features" id="features">
+    <h2>Forum Features</h2>
+    <div class="feature-item">💻 Code Snippets</div>
+    <div class="feature-item">🗣 Q&A</div>
+    <div class="feature-item">🚀 Project Showcases</div>
+  </div>
+
+  <div class="contact" id="contact">
+    <h2>Contact Us</h2>
+    <p>Admin Email: <a href="mailto:admin@codersforum.com">admin@codersforum.com</a></p>
+    <p>Twitter: <a href="https://twitter.com/codersforum" target="_blank">@codersforum</a></p>
+  </div>
+
+  <div class="faq" id="faq">
+    <h2>FAQ</h2>
+    <div class="faq-item">
+      <strong>How do I join?</strong>
+      <p>Register by clicking on the "Join" button on the main forum page.</p>
+    </div>
+    <div class="faq-item">
+      <strong>Is the forum free?</strong>
+      <p>Yes, the forum is free for all coding enthusiasts.</p>
+    </div>
+  </div>
+</body>
+</html>
