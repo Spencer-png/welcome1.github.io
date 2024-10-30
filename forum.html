@@ -1,177 +1,321 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Coders Forum</title>
   <style>
-
-    body {
+    * {
       margin: 0;
       padding: 0;
-      background: #000;
-      color: #0f0;
+      box-sizing: border-box;
       font-family: monospace;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      perspective: 1000px;
+      color: #0f0;
     }
 
-    .hero {
+    body {
+      background: #000;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .matrix-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow: hidden;
+      z-index: -1;
+      opacity: 0.3;
+    }
+
+    .column {
+      position: absolute;
+      top: -100%;
+      width: 1px;
+      height: 100%;
+      background: linear-gradient(transparent, #0f0, transparent);
+      animation: rain 3s infinite;
+    }
+
+    .scanline {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom,
+        transparent 50%,
+        rgba(0, 255, 0, 0.1) 50%
+      );
+      background-size: 100% 4px;
+      animation: scanline 10s linear infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .header {
+      padding: 1rem;
+      background: rgba(0, 20, 0, 0.8);
+      border-bottom: 2px solid #0f0;
+      position: relative;
+      z-index: 2;
+    }
+
+    .header h1 {
+      font-size: 2em;
+      text-transform: uppercase;
+      animation: glow 2s infinite;
       text-align: center;
+    }
+
+    .nav {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      padding: 1rem;
+      background: rgba(0, 10, 0, 0.6);
+      border-bottom: 1px solid #0f0;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border: 1px solid #0f0;
+      transition: all 0.3s;
       position: relative;
       overflow: hidden;
-      padding: 2rem;
     }
 
-    .glitch {
-      font-size: 3em;
-      font-weight: bold;
-      text-transform: uppercase;
+    .nav-link:hover {
+      background: #0f03;
+      box-shadow: 0 0 10px #0f0;
+      transform: translateY(-2px);
+    }
+
+    .nav-link::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(0, 255, 0, 0.1), transparent);
+      transform: rotate(45deg);
+      animation: shine 3s infinite;
+    }
+
+    .main-content {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .forum-card {
+      background: rgba(0, 20, 0, 0.6);
+      border: 1px solid #0f0;
+      padding: 1rem;
       position: relative;
-      text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00;
-      animation: glitch 725ms infinite;
+      transition: all 0.3s;
+      cursor: pointer;
     }
 
-    .glitch::before,
-    .glitch::after {
-      content: "System Breach";
+    .forum-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+    }
+
+    .forum-card::after {
+      content: '';
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      clip: rect(0, 900px, 0, 0);
-    }
-
-    .glitch::before {
-      left: 2px;
-      text-shadow: -1px 0 #ff0000;
-      animation: glitch-anim-1 2s infinite linear alternate-reverse;
-    }
-
-    .glitch::after {
-      left: -2px;
-      text-shadow: -1px 0 #0000ff;
-      animation: glitch-anim-2 3s infinite linear alternate-reverse;
-    }
-
-    .subtext {
-      margin-top: 1em;
-      font-size: 1.2em;
-      opacity: 0.7;
+      background: linear-gradient(45deg, transparent, rgba(0, 255, 0, 0.1), transparent);
       animation: pulse 2s infinite;
-      text-shadow: 0 0 5px #0f0;
     }
 
-    .forum-button {
-      margin-top: 2em;
-      padding: 1em 2em;
+    .topic-title {
       font-size: 1.2em;
-      color: #0f0;
-      background: transparent;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+    }
+
+    .topic-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8em;
+      opacity: 0.7;
+    }
+
+    .stats {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .latest-post {
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid rgba(0, 255, 0, 0.3);
+    }
+
+    .create-post {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      padding: 1rem 2rem;
+      background: rgba(0, 20, 0, 0.8);
       border: 2px solid #0f0;
       cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      transition: all 0.3s;
+      animation: float 3s infinite;
+      z-index: 3;
     }
 
-    .forum-button:hover {
+    .create-post:hover {
       background: #0f03;
-      box-shadow: 0 0 10px #0f0, 0 0 20px #0f0, 0 0 40px #0f0;
-      transform: scale(1.1) translateY(-5px);
+      box-shadow: 0 0 20px #0f0;
     }
 
-    .features {
-      width: 80%;
-      max-width: 900px;
-      margin: 2rem auto;
-      padding: 1rem;
-      border-top: 2px solid #0f0;
-      text-align: center;
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
     }
 
-    .feature-item {
-      margin: 1rem 0;
-      font-size: 1.2em;
-      color: #0f0;
+    @keyframes glow {
+      0%, 100% { text-shadow: 0 0 5px #0f0, 0 0 10px #0f0; }
+      50% { text-shadow: 0 0 10px #0f0, 0 0 20px #0f0; }
     }
 
-    .contact {
-      width: 80%;
-      max-width: 900px;
-      margin: 2rem auto;
-      padding: 1rem;
-      border-top: 2px solid #0f0;
-      text-align: center;
+    @keyframes shine {
+      0% { transform: rotate(45deg) translateY(-100%); }
+      100% { transform: rotate(45deg) translateY(100%); }
     }
 
-    .faq {
-      width: 80%;
-      max-width: 900px;
-      margin: 2rem auto;
-      padding: 1rem;
-      border-top: 2px solid #0f0;
-      text-align: center;
+    @keyframes scanline {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(100vh); }
     }
 
-    .faq-item {
-      margin: 1rem 0;
-      color: #0f0;
+    @keyframes rain {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(200%); }
     }
 
-    @keyframes glitch {
-      0% { text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00; }
-      15%, 49% { text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.035em 0 #fc00ff, -0.05em -0.05em 0 #fffc00; }
-      50% { text-shadow: 0.05em 0.035em 0 #00fffc, 0.03em 0 0 #fc00ff, 0 -0.04em 0 #fffc00; }
+    @keyframes pulse {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
     }
 
-    @keyframes glitch-anim-1 {
-      0%, 20% { clip: rect(30px, 900px, 36px, 0); }
-      40%, 60%, 80%, 100% { clip: rect(43px, 900px, 87px, 0); }
+    .status-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 0.5rem;
+      background: rgba(0, 20, 0, 0.8);
+      border-top: 1px solid #0f0;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8em;
+      z-index: 3;
     }
 
-    @keyframes glitch-anim-2 {
-      0%, 20% { clip: rect(12px, 900px, 59px, 0); }
-      40%, 60%, 80%, 100% { clip: rect(82px, 900px, 31px, 0); }
+    .online-users {
+      animation: blink 1s infinite;
     }
 
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
   </style>
 </head>
 <body>
-  <div class="hero">
-    <div class="glitch">System Breach</div>
-    <div class="subtext">Access granted: eye_angles.x</div>
-    <button class="forum-button" onclick="window.location.href='#forum'">Visit Forum</button>
+  <div class="matrix-bg">
+  
   </div>
+  <div class="scanline"></div>
 
-  <div class="features" id="features">
-    <h2>Forum Features</h2>
-    <div class="feature-item">💻 Code Snippets</div>
-    <div class="feature-item">🗣 Q&A</div>
-    <div class="feature-item">🚀 Project Showcases</div>
-  </div>
+  <header class="header">
+    <h1>CyberCode Forums</h1>
+  </header>
 
-  <div class="contact" id="contact">
-    <h2>Contact Us</h2>
-    <p>Admin Email: <a href="mailto:admin@codersforum.com">admin@codersforum.com</a></p>
-    <p>Twitter: <a href="https://twitter.com/codersforum" target="_blank">@codersforum</a></p>
-  </div>
+  <nav class="nav">
+    <a href="#" class="nav-link">Home</a>
+    <a href="#" class="nav-link">Categories</a>
+    <a href="#" class="nav-link">Latest</a>
+    <a href="#" class="nav-link">Members</a>
+    <a href="#" class="nav-link">Search</a>
+  </nav>
 
-  <div class="faq" id="faq">
-    <h2>FAQ</h2>
-    <div class="faq-item">
-      <strong>How do I join?</strong>
-      <p>Register by clicking on the "Join" button on the main forum page.</p>
+  <main class="main-content">
+    <div class="forum-card">
+      <h2 class="topic-title">Neural Network Architecture Discussion</h2>
+      <div class="topic-meta">
+        <div class="stats">
+          <span>Posts: 142</span>
+          <span>Views: 3.2k</span>
+        </div>
+        <span>Category: AI/ML</span>
+      </div>
+      <div class="latest-post">
+        Latest: Optimizing LSTM layers for time series prediction
+        <br>by @neural_hacker - 2 hours ago
+      </div>
     </div>
-    <div class="faq-item">
-      <strong>Is the forum free?</strong>
-      <p>Yes, the forum is free for all coding enthusiasts.</p>
+
+    <div class="forum-card">
+      <h2 class="topic-title">Quantum Computing Basics</h2>
+      <div class="topic-meta">
+        <div class="stats">
+          <span>Posts: 89</span>
+          <span>Views: 1.8k</span>
+        </div>
+        <span>Category: Quantum</span>
+      </div>
+      <div class="latest-post">
+        Latest: Understanding Quantum Superposition
+        <br>by @q_bit_master - 5 hours ago
+      </div>
     </div>
+
+    <div class="forum-card">
+      <h2 class="topic-title">Cybersecurity Best Practices</h2>
+      <div class="topic-meta">
+        <div class="stats">
+          <span>Posts: 234</span>
+          <span>Views: 5.6k</span>
+        </div>
+        <span>Category: Security</span>
+      </div>
+      <div class="latest-post">
+        Latest: Zero-day vulnerability analysis
+        <br>by @secure_coder - 1 hour ago
+      </div>
+    </div>
+  </main>
+
+  <button class="create-post">+ New Thread</button>
+
+  <div class="status-bar">
+    <span class="online-users">Users Online: 1,337</span>
+    <span>Latest Member: @quantum_dev</span>
+    <span>Server Status: ONLINE</span>
   </div>
+
+  <script>
+
+    const matrixBg = document.querySelector('.matrix-bg');
+    for (let i = 0; i < 50; i++) {
+      const column = document.createElement('div');
+      column.className = 'column';
+      column.style.left = Math.random() * 100 + '%';
+      column.style.animationDelay = Math.random() * 2 + 's';
+      column.style.animationDuration = Math.random() * 2 + 2 + 's';
+      matrixBg.appendChild(column);
+    }
+  </script>
 </body>
 </html>
